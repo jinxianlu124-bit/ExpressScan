@@ -1,0 +1,345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1B1000000000000000000001 /* ExpressScanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000001 /* ExpressScanApp.swift */; };
+		1B1000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000002 /* ContentView.swift */; };
+		1B1000000000000000000003 /* ScanRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000003 /* ScanRecord.swift */; };
+		1B1000000000000000000004 /* ScanSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000004 /* ScanSession.swift */; };
+		1B1000000000000000000005 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000005 /* CameraController.swift */; };
+		1B1000000000000000000006 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000006 /* CameraPreview.swift */; };
+		1B1000000000000000000007 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000007 /* ScanView.swift */; };
+		1B1000000000000000000008 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000008 /* RecordsView.swift */; };
+		1B1000000000000000000009 /* UploadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000009 /* UploadSheet.swift */; };
+		1B100000000000000000000A /* GenerateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A100000000000000000000A /* GenerateView.swift */; };
+		1B100000000000000000000B /* TencentDocsUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A100000000000000000000B /* TencentDocsUploader.swift */; };
+		1B100000000000000000000C /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A100000000000000000000C /* UpdateChecker.swift */; };
+		1B100000000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A100000000000000000000E /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1A10000000000000000000FF /* ExpressScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpressScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A1000000000000000000001 /* ExpressScanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressScanApp.swift; sourceTree = "<group>"; };
+		1A1000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1A1000000000000000000003 /* ScanRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanRecord.swift; sourceTree = "<group>"; };
+		1A1000000000000000000004 /* ScanSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSession.swift; sourceTree = "<group>"; };
+		1A1000000000000000000005 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		1A1000000000000000000006 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		1A1000000000000000000007 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		1A1000000000000000000008 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
+		1A1000000000000000000009 /* UploadSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSheet.swift; sourceTree = "<group>"; };
+		1A100000000000000000000A /* GenerateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateView.swift; sourceTree = "<group>"; };
+		1A100000000000000000000B /* TencentDocsUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TencentDocsUploader.swift; sourceTree = "<group>"; };
+		1A100000000000000000000C /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
+		1A100000000000000000000D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A100000000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D1000000000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		83C4B1A00000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				83C4B1A00000000000000003 /* ExpressScan */,
+				83C4B1A00000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000003 /* ExpressScan */ = {
+			isa = PBXGroup;
+			children = (
+				83C4B1A00000000000000010 /* App */,
+				83C4B1A00000000000000011 /* Data */,
+				83C4B1A00000000000000012 /* Camera */,
+				83C4B1A00000000000000013 /* UI */,
+				83C4B1A00000000000000014 /* Network */,
+				83C4B1A00000000000000015 /* Resources */,
+				1A100000000000000000000D /* Info.plist */,
+			);
+			path = ExpressScan;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A10000000000000000000FF /* ExpressScan.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000010 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				1A1000000000000000000001 /* ExpressScanApp.swift */,
+				1A1000000000000000000002 /* ContentView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000011 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				1A1000000000000000000003 /* ScanRecord.swift */,
+				1A1000000000000000000004 /* ScanSession.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000012 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				1A1000000000000000000005 /* CameraController.swift */,
+				1A1000000000000000000006 /* CameraPreview.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000013 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				1A1000000000000000000007 /* ScanView.swift */,
+				1A1000000000000000000008 /* RecordsView.swift */,
+				1A1000000000000000000009 /* UploadSheet.swift */,
+				1A100000000000000000000A /* GenerateView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000014 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				1A100000000000000000000B /* TencentDocsUploader.swift */,
+				1A100000000000000000000C /* UpdateChecker.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		83C4B1A00000000000000015 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1A100000000000000000000E /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1C1000000000000000000001 /* ExpressScan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E1000000000000000000002 /* Build configuration list for PBXNativeTarget "ExpressScan" */;
+			buildPhases = (
+				1D1000000000000000000001 /* Sources */,
+				1D1000000000000000000003 /* Frameworks */,
+				1D1000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ExpressScan;
+			productName = ExpressScan;
+			productReference = 1A10000000000000000000FF /* ExpressScan.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83C4B1A00000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					1C1000000000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 1E1000000000000000000001 /* Build configuration list for PBXProject "ExpressScan" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83C4B1A00000000000000002;
+			productRefGroup = 83C4B1A00000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1C1000000000000000000001 /* ExpressScan */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D1000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B100000000000000000000E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D1000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B1000000000000000000001 /* ExpressScanApp.swift in Sources */,
+				1B1000000000000000000002 /* ContentView.swift in Sources */,
+				1B1000000000000000000003 /* ScanRecord.swift in Sources */,
+				1B1000000000000000000004 /* ScanSession.swift in Sources */,
+				1B1000000000000000000005 /* CameraController.swift in Sources */,
+				1B1000000000000000000006 /* CameraPreview.swift in Sources */,
+				1B1000000000000000000007 /* ScanView.swift in Sources */,
+				1B1000000000000000000008 /* RecordsView.swift in Sources */,
+				1B1000000000000000000009 /* UploadSheet.swift in Sources */,
+				1B100000000000000000000A /* GenerateView.swift in Sources */,
+				1B100000000000000000000B /* TencentDocsUploader.swift in Sources */,
+				1B100000000000000000000C /* UpdateChecker.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1F1000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_HEADERS_RUN_UNIFDEF = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1F1000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_HEADERS_RUN_UNIFDEF = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1F1000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ExpressScan/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.carrot220.wolf9170;
+				PRODUCT_NAME = ExpressScan;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		1F1000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ExpressScan/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.carrot220.wolf9170;
+				PRODUCT_NAME = ExpressScan;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1E1000000000000000000001 /* Build configuration list for PBXProject "ExpressScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F1000000000000000000001 /* Debug */,
+				1F1000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1E1000000000000000000002 /* Build configuration list for PBXNativeTarget "ExpressScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F1000000000000000000003 /* Debug */,
+				1F1000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83C4B1A00000000000000001 /* Project object */;
+}

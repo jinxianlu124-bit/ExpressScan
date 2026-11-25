@@ -1,0 +1,32 @@
+import Foundation
+
+struct UpdateInfo: Decodable {
+    let versionCode: Int
+    let versionName: String
+    let apkUrl: String
+    let notes: String?
+}
+
+/// 版本检查（iOS 不能像 Android 那样下载安装包静默安装，
+/// 因此这里只负责提示：引导去下载页 / TestFlight 更新）。
+enum UpdateChecker {
+    /// 版本清单地址（与 Android 共用同一份云端清单）。
+    static let updateURL = "https://expressscan-update.app.workbuddy.host/update.json?sharecode=J3J4HTJXIT"
+    /// 下载/更新引导页；换成 TestFlight 链接即可引导 TestFlight 更新。
+    static let downloadPage = "https://expressscan-update.app.workbuddy.host/?sharecode=J3J4HTJXIT"
+
+    /// iOS 版自身版本号（与云端清单里的 versionCode 对应，初次发布为 1）。
+    static let localVersionCode = 1
+
+    static func check() async -> UpdateInfo? {
+        guard let url = URL(string: updateURL) else { return nil }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return nil }
+            let info = try JSONDecoder().decode(UpdateInfo.self, from: data)
+            return info.versionCode > localVersionCode ? info : nil
+        } catch {
+            return nil
+        }
+    }
+}
