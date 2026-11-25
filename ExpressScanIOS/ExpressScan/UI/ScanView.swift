@@ -1,5 +1,7 @@
+import AVFoundation
 import SwiftData
 import SwiftUI
+import UIKit
 
 /// 扫码页：半屏相机预览 + 连续识别，结果落入当前扫码会话。
 struct ScanView: View {

@@ -1,4 +1,6 @@
+import SwiftData
 import SwiftUI
+import UIKit
 
 /// 根视图：扫码 / 记录 / 生成 三个标签页 + 启动时的版本检查。
 struct ContentView: View {
