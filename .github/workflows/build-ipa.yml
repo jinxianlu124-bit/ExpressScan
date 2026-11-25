@@ -1,0 +1,193 @@
+name: Build ExpressScan IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    env:
+      LOG: build-ipa.log
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Toolchain info
+        run: |
+          set -o pipefail
+          {
+            xcodebuild -version
+            echo
+            xcodebuild -list -project ExpressScanIOS/ExpressScan.xcodeproj
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Import signing assets (optional)
+        id: sign
+        env:
+          CERT_B64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          CERT_PWD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          set -o pipefail
+          {
+            if [ -z "$CERT_B64" ] || [ -z "$PROFILE_B64" ] || [ -z "$CERT_PWD" ]; then
+              echo "SIGNING: secrets missing -> unsigned build only"
+              echo "have_signing=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            CERT="$RUNNER_TEMP/cert.p12"
+            PROFILE="$RUNNER_TEMP/profile.mobileprovision"
+            printf '%s' "$CERT_B64" | base64 --decode > "$CERT"
+            printf '%s' "$PROFILE_B64" | base64 --decode > "$PROFILE"
+            security create-keychain -p "" build.keychain
+            security set-keychain-settings -lut 21600 build.keychain
+            security unlock-keychain -p "" build.keychain
+            security import "$CERT" -P "$CERT_PWD" -A -t cert -f pkcs12 -k build.keychain
+            security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+            security list-keychains -d user -s build.keychain "$(security default-keychain -d user | tr -d '"')"
+            mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+            cp "$PROFILE" "$HOME/Library/MobileDevice/Provisioning Profiles/"
+            echo "SIGNING: certificate + profile imported"
+            echo "have_signing=true" >> "$GITHUB_OUTPUT"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Archive (signed)
+        id: archive_signed
+        if: steps.sign.outputs.have_signing == 'true'
+        continue-on-error: true
+        env:
+          TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+        run: |
+          set -o pipefail
+          {
+            xcodebuild archive \
+              -project ExpressScanIOS/ExpressScan.xcodeproj \
+              -scheme ExpressScan \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -archivePath build/ExpressScan.xcarchive \
+              CODE_SIGN_STYLE=Manual \
+              DEVELOPMENT_TEAM="${TEAM_ID:-Z9ADF6KLA7}" \
+              PROVISIONING_PROFILE_SPECIFIER="00008120-000E189C3EF8C01EOLU3V8" \
+              -allowProvisioningUpdates
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Export signed IPA
+        if: steps.sign.outputs.have_signing == 'true' && steps.archive_signed.outcome == 'success'
+        continue-on-error: true
+        env:
+          TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+        run: |
+          set -o pipefail
+          {
+            cat > ExportOptions.plist <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>ad-hoc</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>teamID</key>
+            <string>Z9ADF6KLA7</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>app.carrot220.wolf9170</key>
+              <string>00008120-000E189C3EF8C01EOLU3V8</string>
+            </dict>
+          </dict>
+          </plist>
+          PLIST
+            xcodebuild -exportArchive \
+              -archivePath build/ExpressScan.xcarchive \
+              -exportPath build/export \
+              -exportOptionsPlist ExportOptions.plist
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Build unsigned IPA (fallback)
+        run: |
+          set -o pipefail
+          {
+            if ls build/export/*.ipa >/dev/null 2>&1; then
+              echo "SIGNED IPA already produced -> skip unsigned fallback"
+              exit 0
+            fi
+            xcodebuild build \
+              -project ExpressScanIOS/ExpressScan.xcodeproj \
+              -scheme ExpressScan \
+              -configuration Release \
+              -sdk iphoneos \
+              -derivedDataPath build/dd \
+              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+              ONLY_ACTIVE_ARCH=NO
+            APP="build/dd/Build/Products/Release-iphoneos/ExpressScan.app"
+            test -d "$APP"
+            rm -rf build/unsigned
+            mkdir -p build/unsigned/Payload
+            cp -R "$APP" build/unsigned/Payload/
+            ( cd build/unsigned && zip -qr ../ExpressScan-unsigned.ipa Payload )
+            ls -la build/ExpressScan-unsigned.ipa
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Collect IPA files
+        run: |
+          set -o pipefail
+          {
+            mkdir -p out
+            if ls build/export/*.ipa >/dev/null 2>&1; then
+              for f in build/export/*.ipa; do cp "$f" out/ExpressScan-signed.ipa; done
+            fi
+            if [ -f build/ExpressScan-unsigned.ipa ]; then cp build/ExpressScan-unsigned.ipa out/; fi
+            ls -la out
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Upload IPA artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExpressScan-ipa
+          path: out/*.ipa
+          if-no-files-found: warn
+
+      - name: Publish GitHub Release
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          {
+            if ! ls out/*.ipa >/dev/null 2>&1; then echo "no ipa produced"; exit 1; fi
+            TAG="ipa-build-${{ github.run_number }}"
+            gh release create "$TAG" out/*.ipa \
+              --title "ExpressScan IPA #${{ github.run_number }}" \
+              --notes "Auto build from commit ${{ github.sha }}" \
+              --target "${{ github.sha }}"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Publish build log to issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let log = '';
+            try { log = fs.readFileSync('build-ipa.log', 'utf8'); } catch (e) { log = '(no log file)'; }
+            const errorLines = log.split('\n').filter(l => l.includes('error:') || l.includes('Error:')).slice(0, 80).join('\n');
+            const tail = log.slice(-4000);
+            const body = ['**Status:** ${{ job.status }}  |  **Run:** #${{ github.run_number }}', '', '```', errorLines || '(no error: lines)', '```', '', '--- tail ---', '```', tail, '```'].join('\n');
+            const title = 'CI build log';
+            const list = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100 });
+            const existing = list.data.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
+            }
