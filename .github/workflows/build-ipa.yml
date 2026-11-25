@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-26
     env:
       LOG: build-ipa.log
 
@@ -78,7 +78,7 @@ jobs:
             TAG="unsigned-${{ github.run_number }}"
             gh release create "$TAG" out/ExpressScan-unsigned.ipa \
               --title "ExpressScan 未签名 IPA #${{ github.run_number }}" \
-              --notes "未签名包，需用你的证书重签后才能安装。commit ${{ github.sha }}" \
+              --notes "未签名包，需用证书重签后才能安装。commit ${{ github.sha }}" \
               --target "${{ github.sha }}"
           } 2>&1 | tee -a "$LOG"
 
