@@ -1,0 +1,84 @@
+# ExpressScan iOS - GitHub Actions 有签名构建
+# 已按你的证书填好：Team Z9ADF6KLA7，描述文件 00008120-000E189C3EF8C01EOLU3V8，
+# 包名已改成 app.carrot220.wolf9170，导出方式 ad-hoc（只能装在描述文件里的那台设备上）。
+# 使用前先在 GitHub 仓库 Settings -> Secrets and variables -> Actions 里加 4 个 Secret：
+#   IOS_CERTIFICATE_P12_BASE64       .p12 转 base64 后的内容
+#   IOS_CERTIFICATE_PASSWORD         .p12 的导出密码
+#   IOS_PROVISIONING_PROFILE_BASE64  .mobileprovision 转 base64 后的内容
+#   IOS_TEAM_ID                      Z9ADF6KLA7
+# 千万不要把证书文件或密码提交进仓库。
+name: Build ExpressScan IPA (signed)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install certificate and provisioning profile
+        run: |
+          CERT_PATH=$RUNNER_TEMP/cert.p12
+          PROFILE_PATH=$RUNNER_TEMP/profile.mobileprovision
+          echo "${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}" | base64 --decode > $CERT_PATH
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $PROFILE_PATH
+          security create-keychain -p "" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import $CERT_PATH -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k build.keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+          security list-keychain -d user -s build.keychain
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Write export options
+        run: |
+          cat > ExportOptions.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>ad-hoc</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>teamID</key>
+            <string>Z9ADF6KLA7</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>app.carrot220.wolf9170</key>
+              <string>00008120-000E189C3EF8C01EOLU3V8</string>
+            </dict>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Archive (manual signing)
+        run: |
+          xcodebuild archive \
+            -project ExpressScanIOS/ExpressScan.xcodeproj \
+            -target ExpressScan \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/ExpressScan.xcarchive \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
+            PROVISIONING_PROFILE_SPECIFIER="00008120-000E189C3EF8C01EOLU3V8"
+
+      - name: Export signed IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/ExpressScan.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExpressScan-signed-ipa
+          path: build/export/*.ipa
