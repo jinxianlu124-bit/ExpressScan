@@ -1,7 +1,5 @@
-import AVFoundation
 import SwiftData
 import SwiftUI
-import UIKit
 
 /// 扫码页：半屏相机预览 + 连续识别，结果落入当前扫码会话。
 struct ScanView: View {
@@ -140,6 +138,13 @@ struct ScanView: View {
         ScanSession.onScan()
         modelContext.insert(ScanRecord(code: code, format: format))
         try? modelContext.save()
+
+        // 扫码后自动打印（开关在打印页顶部；未连接打印机时静默跳过）
+        if PrinterStore.shared.autoPrint {
+            DispatchQueue.main.async {
+                PrintService.shared.print(code: code) { _ in }
+            }
+        }
 
         // 单次模式：录入一条后暂停，需手动继续
         if !batchMode {

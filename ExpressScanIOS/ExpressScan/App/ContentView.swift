@@ -1,10 +1,8 @@
-import SwiftData
 import SwiftUI
-import UIKit
 
-/// 根视图：扫码 / 记录 / 生成 三个标签页 + 启动时的版本检查。
+/// 根视图：扫码 / 记录 / 打印 / 生成 四个标签页 + 启动时的版本检查。
 struct ContentView: View {
-    enum Tab: Hashable { case scan, records, generate }
+    enum Tab: Hashable { case scan, records, print, generate }
 
     @State private var tab: Tab = .scan
     @State private var recordsShowHistory = false
@@ -24,6 +22,10 @@ struct ContentView: View {
             }
             .tabItem { Label("记录", systemImage: "list.bullet") }
             .tag(Tab.records)
+
+            PrintView()
+                .tabItem { Label("打印", systemImage: "printer") }
+                .tag(Tab.print)
 
             NavigationStack {
                 GenerateView()

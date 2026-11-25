@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 /// 扫码记录（SwiftData 持久化，数据永久保留）。
 @Model
