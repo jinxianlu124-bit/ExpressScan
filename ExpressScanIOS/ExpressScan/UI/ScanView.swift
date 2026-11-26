@@ -15,6 +15,18 @@ struct ScanView: View {
     @State private var paused = false
     @State private var lastText: String?
     @State private var toast: String?
+    /// 是否开启「防止扫错单号」（与安卓 ScanPrefs 同名，默认开）
+    @State private var validateCode = ScanPrefs.validateCode
+    /// 被拦下的疑似内容，非空时弹确认框
+    @State private var suspicious: SuspiciousCode?
+
+    /// 疑似扫错的一条：给用户看清楚内容，再决定要不要硬存
+    private struct SuspiciousCode: Identifiable {
+        let id = UUID()
+        let code: String
+        let format: String
+        let reason: String
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -41,11 +53,41 @@ struct ScanView: View {
                 }
                 .frame(height: geo.size.height * 0.45)
                 .clipped()
+                // 手电筒：暗处扫面单用，只有带补光灯的机型才显示
+                .overlay(alignment: .topTrailing) {
+                    if authorized && camera.torchAvailable {
+                        Button {
+                            camera.toggleTorch()
+                        } label: {
+                            Image(systemName: camera.torchOn ? "flashlight.on.fill" : "flashlight.off.fill")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(camera.torchOn ? Color.black : Color.white)
+                                .frame(width: 44, height: 44)
+                                .background(
+                                    Circle().fill(camera.torchOn ? Color.yellow : Color.black.opacity(0.45))
+                                )
+                        }
+                        .accessibilityLabel(camera.torchOn ? "关闭手电筒" : "打开手电筒")
+                        .padding(.top, 14)
+                        .padding(.trailing, 14)
+                    }
+                }
 
                 // 下半屏：控制区
                 VStack(alignment: .leading, spacing: 10) {
                     Toggle("批量扫码（连续识别）", isOn: $batchMode)
                         .padding(.top, 12)
+
+                    Toggle("防止扫错单号", isOn: $validateCode)
+                        .onChange(of: validateCode) { _, newValue in
+                            ScanPrefs.validateCode = newValue
+                        }
+
+                    Text(validateCode
+                         ? "商品条码 / 网址 / 乱码会被拦下，不入库（可单次放行）"
+                         : "已关闭：扫到什么就存什么")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
 
                     if let lastText {
                         Text("最近识别：\(lastText)")
@@ -93,6 +135,20 @@ struct ScanView: View {
             }
         }
         .animation(.easeInOut, value: toast)
+        .alert("疑似不是快递单号",
+               isPresented: Binding(get: { suspicious != nil },
+                                    set: { if !$0 { suspicious = nil } }),
+               presenting: suspicious) { item in
+            Button("仍要保存") {
+                let code = item.code
+                let format = item.format
+                suspicious = nil
+                save(code, format: format)
+            }
+            Button("忽略", role: .cancel) { suspicious = nil }
+        } message: { item in
+            Text("\(item.reason)\n\n\(item.code)")
+        }
         .task(id: toast) {
             guard toast != nil else { return }
             try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -125,16 +181,33 @@ struct ScanView: View {
 
     private func handleScan(code: String, format: String) {
         lastText = "\(code)（\(format)）"
-        let feedback = UIImpactFeedbackGenerator(style: .medium)
-        feedback.impactOccurred()
 
+        // 1) 2 秒内同码去重：不重复入库，提示「已扫码」
         let since = Date().addingTimeInterval(-2)
         let predicate = #Predicate<ScanRecord> { record in
             record.createdAt > since && record.code == code
         }
         let descriptor = FetchDescriptor<ScanRecord>(predicate: predicate)
         let duplicated = (try? modelContext.fetchCount(descriptor)) ?? 0
-        guard duplicated == 0 else { return }
+        guard duplicated == 0 else {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            toast = "已扫码：\(code)"
+            return
+        }
+
+        // 2) 防止扫错单号：商品条码 / 网址 / 乱码等拦下，交用户决定
+        if validateCode, case let .suspect(reason) = TrackingCodeValidator.check(code, format: format) {
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            suspicious = SuspiciousCode(code: code, format: format, reason: reason)
+            return
+        }
+
+        save(code, format: format)
+    }
+
+    /// 真正入库（正常识别与「仍要保存」都走这里）
+    private func save(_ code: String, format: String) {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
 
         ScanSession.onScan()
         modelContext.insert(ScanRecord(code: code, format: format))

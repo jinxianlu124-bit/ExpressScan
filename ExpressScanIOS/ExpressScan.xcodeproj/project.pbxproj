@@ -26,6 +26,7 @@
 		1B1000000000000000000015 /* PrinterStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000015 /* PrinterStore.swift */; };
 		1B1000000000000000000016 /* PrintService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000016 /* PrintService.swift */; };
 		1B1000000000000000000017 /* PrintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000017 /* PrintView.swift */; };
+		1B1000000000000000000018 /* TrackingCodeValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1000000000000000000018 /* TrackingCodeValidator.swift */; };
 		1B100000000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A100000000000000000000E /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		1A1000000000000000000015 /* PrinterStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrinterStore.swift; sourceTree = "<group>"; };
 		1A1000000000000000000016 /* PrintService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintService.swift; sourceTree = "<group>"; };
 		1A1000000000000000000017 /* PrintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintView.swift; sourceTree = "<group>"; };
+		1A1000000000000000000018 /* TrackingCodeValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingCodeValidator.swift; sourceTree = "<group>"; };
 		1A100000000000000000000D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A100000000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +112,7 @@
 			children = (
 				1A1000000000000000000003 /* ScanRecord.swift */,
 				1A1000000000000000000004 /* ScanSession.swift */,
+				1A1000000000000000000018 /* TrackingCodeValidator.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				1B1000000000000000000015 /* PrinterStore.swift in Sources */,
 				1B1000000000000000000016 /* PrintService.swift in Sources */,
 				1B1000000000000000000017 /* PrintView.swift in Sources */,
+				1B1000000000000000000018 /* TrackingCodeValidator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +318,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ExpressScan/Info.plist;
@@ -323,7 +327,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.expressscan.ios;
 				PRODUCT_NAME = ExpressScan;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -337,7 +341,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ExpressScan/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -345,7 +349,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.expressscan.ios;
 				PRODUCT_NAME = ExpressScan;
 				SWIFT_EMIT_LOC_STRINGS = YES;

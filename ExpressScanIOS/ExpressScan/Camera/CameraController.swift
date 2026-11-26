@@ -6,6 +6,12 @@ final class CameraController: NSObject, ObservableObject, AVCaptureMetadataOutpu
     let session = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "expressscan.camera")
     private var configured = false
+    private var device: AVCaptureDevice?
+
+    /// 设备是否带补光灯（无灯的机型不显示按钮）
+    @Published private(set) var torchAvailable = false
+    /// 补光灯当前是否点亮
+    @Published private(set) var torchOn = false
 
     /// 识别回调（主线程触发）。
     var onDetect: ((_ code: String, _ format: String) -> Void)?
@@ -26,8 +32,36 @@ final class CameraController: NSObject, ObservableObject, AVCaptureMetadataOutpu
     func stop() {
         sessionQueue.async { [weak self] in
             guard let self else { return }
+            // 关相机时顺手关灯，避免退出页面后手电筒一直亮着
+            if let device = self.device, device.torchMode == .on {
+                try? device.lockForConfiguration()
+                device.torchMode = .off
+                device.unlockForConfiguration()
+                DispatchQueue.main.async { self.torchOn = false }
+            }
             if self.session.isRunning {
                 self.session.stopRunning()
+            }
+        }
+    }
+
+    /// 切换补光灯（手电筒）。光线暗的仓库/车厢里扫面单用得上。
+    func toggleTorch() {
+        sessionQueue.async { [weak self] in
+            guard let self, let device = self.device, device.hasTorch else { return }
+            do {
+                try device.lockForConfiguration()
+                let turnOn = device.torchMode != .on
+                if turnOn {
+                    try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+                } else {
+                    device.torchMode = .off
+                }
+                device.unlockForConfiguration()
+                let on = turnOn
+                DispatchQueue.main.async { self.torchOn = on }
+            } catch {
+                DispatchQueue.main.async { self.torchOn = false }
             }
         }
     }
@@ -44,6 +78,9 @@ final class CameraController: NSObject, ObservableObject, AVCaptureMetadataOutpu
             return
         }
         session.addInput(input)
+        self.device = device
+        let hasTorch = device.hasTorch
+        DispatchQueue.main.async { self.torchAvailable = hasTorch }
 
         let output = AVCaptureMetadataOutput()
         guard session.canAddOutput(output) else {
